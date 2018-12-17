@@ -14,7 +14,10 @@ class Pannellum extends Component {
     super(props);
     this.state = {
       id: Math.random().toString(36).substr(2, 9),
+      currentHotSpots: [],
+      currentImage: ''
     };
+    this.inUpdate = false
   }
 
   static propTypes = {
@@ -117,10 +120,9 @@ class Pannellum extends Component {
     if (Array.isArray(hotspots)){
       hotspots.map(hotspot =>{
         switch (hotspot.props.type){
-
           case "info":
             return hotspotArray.push({
-              "id": Math.random().toString(36).substr(2, 9),
+              "id": hotspot.props.id ? hotspot.props.id : Math.random().toString(36).substr(2, 9),
               "type":hotspot.props.type,
               "pitch":hotspot.props.pitch ? hotspot.props.pitch : 10,
               "yaw":hotspot.props.yaw ? hotspot.props.yaw : 10,
@@ -129,7 +131,7 @@ class Pannellum extends Component {
             });
           case "custom":
             return hotspotArray.push({
-              "id": Math.random().toString(36).substr(2, 9),
+              "id": hotspot.props.id ? hotspot.props.id : Math.random().toString(36).substr(2, 9),
               "pitch":hotspot.props.pitch ? hotspot.props.pitch : 10,
               "yaw":hotspot.props.yaw ? hotspot.props.yaw : 10,
               "cssClass": hotspot.props.cssClass ? hotspot.props.cssClass : 'tooltipcss',
@@ -145,9 +147,15 @@ class Pannellum extends Component {
       });
     }
 
+//    let hotspotArray = this.props.hotSpots;
+
     let jsonConfig = {
-      type: "equirectangular",
-      panorama: this.props.image,
+      type: "multires",
+      default: {
+        firstScene: this.props.image
+      },
+      scenes: {},
+//      panorama: this.props.image,
       yaw : this.props.yaw,
       pitch: this.props.pitch,
       hfov: this.props.hfov,
@@ -173,25 +181,65 @@ class Pannellum extends Component {
       showFullscreenCtrl: this.props.showFullscreenCtrl,
       showControls:this.props.showControls,
       hotSpotDebug: this.props.hotspotDebug,
-      hotSpots: hotspotArray
+//      hotSpots: hotspotArray ? hotspotArray : [] 
     };
+
+    jsonConfig.scenes[this.props.image] = {
+      type: "multires",
+      multiRes: {
+        basePath: this.props.image,
+        path: "/%l/%s%y_%x",
+        fallbackPath: "/fallback/%s",
+        extension: "jpg",
+        tileResolution: 512,
+        maxLevel: 3,
+        cubeResolution: 1296
+      }
+    }
   
     Object.keys(jsonConfig).forEach((key) => (jsonConfig[key] === "") && delete jsonConfig[key]);
     
-    if (state === "update"){
+    if (state === "update") {
+      if (this.props.image && this.panorama.getScene() != this.props.image) {
+        this.panorama.addScene(this.props.image, {
+          type: "multires",
+          multiRes: {
+            basePath: this.props.image,
+            path: "/%l/%s%y_%x",
+            fallbackPath: "/fallback/%s",
+            extension: "jpg",
+            tileResolution: 512,
+            maxLevel: 3,
+            cubeResolution: 1296
+          },
+        });
+        this.panorama.loadScene(this.props.image, 'same', 'same', 'same');
 
-      this.panorama.destroy();
-      this.panorama = pannellum.viewer(this.props.id ? this.props.id : this.state.id, jsonConfig);
-      this.panorama.on("load" , this.props.onLoad);
-      this.panorama.on("scenechange" , this.props.onScenechange);
-      this.panorama.on("scenechangefadedone" , this.props.onScenechangefadedone);
-      this.panorama.on("error" , this.props.onError);
-      this.panorama.on("errorcleared" , this.props.onErrorcleared);
-      this.panorama.on("mousedown" , this.props.onMousedown);
-      this.panorama.on("mouseup" , this.props.onMouseup);
-      this.panorama.on("touchstart" , this.props.onTouchstart);
-      this.panorama.on("touchend" , this.props.onTouchend);
+        this.setState({
+          currentImage: this.props.image,
+        })
+      }
 
+      let hsStr = JSON.stringify(hotspotArray)
+      let chsStr = JSON.stringify(this.state.currentHotSpots)
+      if (!this.inUpdate && hsStr !== chsStr) {
+        this.inUpdate = true
+        for (let n in this.state.currentHotSpots) {
+          this.panorama.removeHotSpot(this.state.currentHotSpots[n], this.state.currentImage)
+        }
+
+        for (let n in hotspotArray) {
+          this.panorama.addHotSpot(hotspotArray[n], this.props.image)
+        }
+
+        let self = this
+        this.setState({
+          currentHotSpots: hotspotArray
+        }, () => {
+          console.log('Regen')
+          self.inUpdate = false
+        })
+      }
     } else {
       this.panorama = pannellum.viewer(this.props.id ? this.props.id : this.state.id, jsonConfig);
 
