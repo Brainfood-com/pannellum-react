@@ -181,6 +181,7 @@ class Pannellum extends Component {
       showFullscreenCtrl: this.props.showFullscreenCtrl,
       showControls:this.props.showControls,
       hotSpotDebug: this.props.hotspotDebug,
+//      sceneFadeDuration: 1000,
 //      hotSpots: hotspotArray ? hotspotArray : [] 
     };
 
@@ -192,8 +193,8 @@ class Pannellum extends Component {
         fallbackPath: "/fallback/%s",
         extension: "jpg",
         tileResolution: 512,
-        maxLevel: 3,
-        cubeResolution: 1296
+        maxLevel: 4,
+        cubeResolution: 2744
       }
     }
   
@@ -209,8 +210,8 @@ class Pannellum extends Component {
             fallbackPath: "/fallback/%s",
             extension: "jpg",
             tileResolution: 512,
-            maxLevel: 3,
-            cubeResolution: 1296
+            maxLevel: 4,
+            cubeResolution: 2744
           },
         });
         this.panorama.loadScene(this.props.image, 'same', 'same', 'same');
@@ -220,8 +221,8 @@ class Pannellum extends Component {
         })
       }
 
-      let hsStr = JSON.stringify(hotspotArray)
-      let chsStr = JSON.stringify(this.state.currentHotSpots)
+      let hsStr = this.props.image + JSON.stringify(hotspotArray)
+      let chsStr = this.state.currentImage + JSON.stringify(this.state.currentHotSpots)
       if (!this.inUpdate && hsStr !== chsStr) {
         this.inUpdate = true
         for (let n in this.state.currentHotSpots) {
