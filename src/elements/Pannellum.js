@@ -262,7 +262,11 @@ class Pannellum extends Component {
   }
 
   componentDidUpdate (prevProps){
-    this.renderImage("update");
+    if (this.props.orientationOnByDefault != prevProps.orientationOnByDefault) {
+      this.renderImage("mount")
+    } else {
+      this.renderImage("update")
+    }
   }
 
   handleClickHotspot = (e , args) => {
