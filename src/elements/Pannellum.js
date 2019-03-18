@@ -261,6 +261,10 @@ class Pannellum extends Component {
     this.renderImage("mount");
   }
 
+  componentWillUnmount = () => {
+    this.panorama.destroy()
+  }
+
   componentDidUpdate (prevProps){
     if (this.props.orientationOnByDefault != prevProps.orientationOnByDefault) {
       this.renderImage("mount")
