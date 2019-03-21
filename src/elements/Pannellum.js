@@ -253,6 +253,7 @@ class Pannellum extends Component {
       this.panorama.on("mouseup" , this.props.onMouseup);
       this.panorama.on("touchstart" , this.props.onTouchstart);
       this.panorama.on("touchend" , this.props.onTouchend);
+      this.panorama.on("orientationchange", this.props.onOrientationChange);
     } 
   }
 
@@ -260,8 +261,16 @@ class Pannellum extends Component {
     this.renderImage("mount");
   }
 
+  componentWillUnmount = () => {
+    this.panorama.destroy()
+  }
+
   componentDidUpdate (prevProps){
-    this.renderImage("update");
+    if (this.props.orientationOnByDefault != prevProps.orientationOnByDefault) {
+      this.renderImage("mount")
+    } else {
+      this.renderImage("update")
+    }
   }
 
   handleClickHotspot = (e , args) => {
