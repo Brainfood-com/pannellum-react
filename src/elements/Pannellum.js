@@ -241,6 +241,9 @@ class Pannellum extends Component {
           self.inUpdate = false
         })
       }
+
+      if (this.props.pitch && this.panorama.getPitch() != this.props.pitch) this.panorama.setPitch(this.props.pitch)
+      if (this.props.yaw && this.panorama.getYaw() != this.props.yaw) this.panorama.setYaw(this.props.yaw)
     } else {
       this.panorama = pannellum.viewer(this.props.id ? this.props.id : this.state.id, jsonConfig);
 
