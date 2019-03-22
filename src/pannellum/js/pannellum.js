@@ -1622,8 +1622,11 @@ window.pannellum = (function(window, document, undefined) {
  * @private
  */
     function renderInitCallback() {
-    // Fade if specified
-      if (config.sceneFadeDuration && renderer.fadeImg !== undefined) {
+      function checkRenderer() {
+        if (renderer.isLoading(true)) {
+          window.requestAnimationFrame(checkRenderer);
+          return;
+        }
         renderer.fadeImg.style.opacity = 0;
         // Remove image
         var fadeImg = renderer.fadeImg;
@@ -1632,6 +1635,10 @@ window.pannellum = (function(window, document, undefined) {
           renderContainer.removeChild(fadeImg);
           fireEvent('scenechangefadedone');
         }, config.sceneFadeDuration);
+      }
+      // Fade if specified
+      if (config.sceneFadeDuration && renderer.fadeImg !== undefined) {
+        window.requestAnimationFrame(checkRenderer);
       }
     
       // Show compass if applicable

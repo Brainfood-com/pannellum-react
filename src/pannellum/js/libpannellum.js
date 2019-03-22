@@ -701,9 +701,12 @@ window.libpannellum = (function(window, document, undefined) {
      * @instance
      * @returns {boolean} Whether or not images are loading.
      */
-    this.isLoading = function() {
+    this.isLoading = function(onlyBase) {
       if (gl && imageType == 'multires') {
         for ( var i = 0; i < program.currentNodes.length; i++ ) {
+          if (onlyBase && program.currentNodes[i].level !== 1) {
+            continue;
+          }
           if (!program.currentNodes[i].textureLoaded) {
             return true;
           }
