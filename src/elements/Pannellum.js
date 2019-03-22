@@ -181,7 +181,7 @@ class Pannellum extends Component {
       showFullscreenCtrl: this.props.showFullscreenCtrl,
       showControls:this.props.showControls,
       hotSpotDebug: this.props.hotspotDebug,
-//      sceneFadeDuration: 1000,
+      sceneFadeDuration: this.props.sceneFadeDuration,
 //      hotSpots: hotspotArray ? hotspotArray : [] 
     };
 
