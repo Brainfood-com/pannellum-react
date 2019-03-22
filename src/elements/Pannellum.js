@@ -201,7 +201,7 @@ class Pannellum extends Component {
     Object.keys(jsonConfig).forEach((key) => (jsonConfig[key] === "") && delete jsonConfig[key]);
     
     if (state === "update") {
-      if (this.props.image && this.panorama.getScene() != this.props.image) {
+      if (this.props.image && this.state.currentImage != this.props.image) {
         this.panorama.addScene(this.props.image, {
           type: "multires",
           multiRes: {
