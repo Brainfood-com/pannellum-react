@@ -210,8 +210,8 @@ class Pannellum extends Component {
             fallbackPath: "/fallback/%s",
             extension: "jpg",
             tileResolution: 512,
-            maxLevel: 4,
-            cubeResolution: 2744
+            maxLevel: 3,
+            cubeResolution: 1296
           },
         });
         this.panorama.loadScene(this.props.image, 'same', 'same', 'same');
