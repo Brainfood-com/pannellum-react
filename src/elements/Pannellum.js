@@ -194,7 +194,7 @@ class Pannellum extends Component {
         extension: "jpg",
         tileResolution: 512,
         maxLevel: 4,
-        cubeResolution: 2744
+        cubeResolution: 2600
       }
     }
   
@@ -202,16 +202,19 @@ class Pannellum extends Component {
     
     if (state === "update") {
       if (this.props.image && this.state.currentImage != this.props.image) {
-        this.panorama.addScene(this.props.image, {
-          type: "multires",
-          multiRes: {
-            basePath: this.props.image,
+        let multiRes = this.props.multiRes ? this.props.multiRes : {
             path: "/%l/%s%y_%x",
             fallbackPath: "/fallback/%s",
             extension: "jpg",
             tileResolution: 512,
-            maxLevel: 3,
-            cubeResolution: 1296
+            maxLevel: 4,
+            cubeResolution: 2600
+        }
+        this.panorama.addScene(this.props.image, {
+          type: "multires",
+          multiRes: {
+            ...multiRes,
+            basePath: this.props.image,
           },
         });
         this.panorama.loadScene(this.props.image, 'same', 'same', 'same');
