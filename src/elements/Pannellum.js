@@ -29,9 +29,18 @@ class Pannellum extends Component {
     width: propTypes.string,
     height: propTypes.string,
     image: propTypes.string,
-    yaw : propTypes.number,
-    pitch: propTypes.number,
-    hfov: propTypes.number,
+    yaw : propTypes.oneOfType([
+      propTypes.number,
+      propTypes.string
+    ]),
+    pitch: propTypes.oneOfType([
+      propTypes.number,
+      propTypes.string
+    ]),
+    hfov: propTypes.oneOfType([
+      propTypes.number,
+      propTypes.string
+    ]),
     minHfov: propTypes.number,
     maxHfov: propTypes.number,
     minPitch: propTypes.number,
@@ -217,7 +226,12 @@ class Pannellum extends Component {
             basePath: this.props.image,
           },
         });
-        this.panorama.loadScene(this.props.image, 'same', 'same', 'same');
+
+        if (this.props.sceneChange) {
+          this.panorama.loadScene(this.props.image, 0, 0, 100)
+        } else {
+          this.panorama.loadScene(this.props.image, 'same', 'same', 'same')
+        }
 
         this.setState({
           currentImage: this.props.image,
