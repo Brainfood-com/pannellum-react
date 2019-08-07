@@ -274,6 +274,10 @@ class Pannellum extends Component {
       this.panorama.on("touchstart" , this.props.onTouchstart);
       this.panorama.on("touchend" , this.props.onTouchend);
       this.panorama.on("orientationchange", this.props.onOrientationChange);
+
+      this.setState({
+        currentImage: this.props.image
+      })
     } 
   }
 
